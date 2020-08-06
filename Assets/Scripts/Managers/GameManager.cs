@@ -16,13 +16,10 @@ public class GameManager : MonoBehaviour
     public string gameSceneName = string.Empty;
 
     // Collections
-    private List<string> activeScenes = new List<string>();
+    private List<Scene> activeScenes = new List<Scene>();
 
     // String
     private string currentActiveScene = string.Empty;
-
-    // Bool
-    private bool isQuittingApplication = false;
 
     public static GameManager Instance
     {
@@ -54,7 +51,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("GameManager.OnSceneLoaded(): Loaded scene with name: " + loadedScene.name);
 #endif
 
-        activeScenes.Add(loadedScene.name);
+        activeScenes.Add(loadedScene);
+        SceneManager.SetActiveScene(loadedScene);
 
         if (loadedScene.name.Equals(managerSceneName))
         {
@@ -65,7 +63,12 @@ public class GameManager : MonoBehaviour
 
     public void OnSceneUnloaded(Scene unloadedScene)
     {
-        activeScenes.Remove(unloadedScene.name);
+#if UNITY_EDITOR
+        Debug.Log("GameManager.OnSceneUnloaded(): Unloaded scene with name: " + unloadedScene.name);
+#endif
+
+        activeScenes.Remove(unloadedScene);
+        SceneManager.SetActiveScene(activeScenes[activeScenes.Count - 1]);
 
         // Check for 0 active scenes, which means we are quitting the game
         if (activeScenes.Count == 0)
@@ -74,10 +77,10 @@ public class GameManager : MonoBehaviour
 
     private void InitGame()
     {
-        // Load all necassary scenes, skipping game scene as that needs some more resources
-        LoadScene(startSceneName);
-        LoadScene(uiSceneName);
-        LoadScene(loadingSceneName);
+        // Load all necassary scenes
+        LoadScene(startSceneName, false);
+
+        // Setup variables if needed..
     }
 
     private void QuitGame()
@@ -85,7 +88,7 @@ public class GameManager : MonoBehaviour
         // Unload all scenes, unloading all scenes will result in the application quitting
         for (int i = 0; i < activeScenes.Count; i++)
         {
-            UnloadScene(activeScenes[i]);
+            UnloadScene(activeScenes[i].name);
         }
     }
 
@@ -100,9 +103,12 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    public void LoadScene(string sceneName)
+    public void LoadScene(string sceneName, bool aSync)
     {
-        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        if (aSync)
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        else
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
     }
 
     public void UnloadScene(string sceneName)
