@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
         get { return instance; }
     }
 
-    // Awake is called at the first frame
+    // Awake is called at initialization of this class
     public void Awake()
     {
         // Singleton creation
@@ -80,7 +80,30 @@ public class GameManager : MonoBehaviour
         // Load all necassary scenes
         LoadScene(startSceneName, false);
 
+        // Hook up custom events
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
+
         // Setup variables if needed..
+    }
+
+    private void QuitApplication()
+    {
+        // Last chance to properly unload all data
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    private void StartGame()
+    {
+        // Load scenes
+        LoadScene(uiSceneName, true);
+        UnloadScene(startSceneName);
     }
 
     private void QuitGame()
@@ -90,17 +113,6 @@ public class GameManager : MonoBehaviour
         {
             UnloadScene(activeScenes[i].name);
         }
-    }
-
-    private void QuitApplication()
-    {
-        // Last chance to properly unload all data
-
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
     }
 
     public void LoadScene(string sceneName, bool aSync)
@@ -115,4 +127,13 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.UnloadSceneAsync(sceneName);
     }
+
+    #region CustomEventListeners
+
+    public void OnPlayerStartsGame()
+    {
+        StartGame();
+    }
+
+    #endregion
 }
