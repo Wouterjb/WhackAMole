@@ -15,6 +15,9 @@ public class EventManager : MonoBehaviour
         EVENT_PLAYER_SHOW_START_MENU = 1,
         EVENT_ACTIVATE_CANVAS = 2,
         EVENT_PLAYER_START_GAME = 3,
+        EVENT_LOADING_STARTED = 4,
+        EVENT_LOADING_COMPLETED = 5,
+        EVENT_LOADING_PROGRESSED = 6,
     }
 
     // Singleton
@@ -80,7 +83,7 @@ public class EventManager : MonoBehaviour
             unityEvent.RemoveListener(listener);
     }
 
-    public void RemoveAllListeners()
+    private void RemoveAllListeners()
     {
         foreach (KeyValuePair<CustomEventType, Event> kvp in eventLibrary)
         {
@@ -88,7 +91,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void RemoveAllListenersFor(CustomEventType eventType)
+    private void RemoveAllListenersFor(CustomEventType eventType)
     {
         // Check if already existing
         Event unityEvent = null;

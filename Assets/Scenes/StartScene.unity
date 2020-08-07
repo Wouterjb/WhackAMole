@@ -280,6 +280,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2295741293550416390, guid: c3ddf6f93248e904ead61835448c9e1e,
+        type: 3}
+      propertyPath: minimalLoadingScreenTime
+      value: 4.58
+      objectReference: {fileID: 0}
     - target: {fileID: 2295741293550416391, guid: c3ddf6f93248e904ead61835448c9e1e,
         type: 3}
       propertyPath: m_LocalPosition.x

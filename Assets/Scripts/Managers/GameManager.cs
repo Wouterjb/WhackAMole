@@ -17,8 +17,12 @@ public class GameManager : MonoBehaviour
     public string gameSceneName = string.Empty;
 
     [Header("Loading")]
-    [Tooltip("The minimal amount of time the loading screen should be shown")]
+    [Tooltip("The minimal amount of time the loading screen should be shown.")]
     public float minimalLoadingScreenTime = 0.0f;
+    [Tooltip("The text shown when loading starts.")]
+    public string loadingText = "Loading..";
+    [Tooltip("The text shown when waiting starts.")]
+    public string waitingText = "Waiting..";
 
     // Collections
     private List<Scene> activeScenes = new List<Scene>();
@@ -137,7 +141,10 @@ public class GameManager : MonoBehaviour
         if (activeScenes.Count > 0)
         {
             SceneManager.SetActiveScene(activeScenes[activeScenes.Count - 1]);
+
+#if UNITY_EDITOR
             Debug.Log("GameManager.UnloadScene(): Current active scene: " + SceneManager.GetActiveScene().name);
+#endif
         }
 
         SceneManager.UnloadSceneAsync(sceneName);
@@ -145,33 +152,40 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LoadSceneAsync(string sceneName, bool forceMinimalLoadingTime)
     {
-        float showLoadingScreenTime = 0.0f;
-
         if (forceMinimalLoadingTime)
         {
-            // TODO: Set loading screen to waiting.
+            float showLoadingScreenTime = 0.0f;
 
-            // Add a little waiting time, could be used to show tips or ads
+            // Start waiting
+            EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_STARTED, waitingText);
+
+            // Add a little waiting time, could be used to show tips or ads by signaling the loading screen.
             while (showLoadingScreenTime < minimalLoadingScreenTime)
             {
                 showLoadingScreenTime += Time.deltaTime;
+
+                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_PROGRESSED, (float)(showLoadingScreenTime / minimalLoadingScreenTime));
+
                 yield return new WaitForEndOfFrame();
             }
         }
 
-        // TODO: Set loading screen to loading.
+        // Start loading
+        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_STARTED, loadingText);
 
         // Start the operation.
         AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
         while (sceneLoadOperation.progress < 1)
         {
-            // TODO: Update loading screen
+            // Update progress to listeners
+            EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_PROGRESSED, sceneLoadOperation.progress);
 
             yield return new WaitForEndOfFrame();
         }
 
-        // TODO: Update loading screen
+        // Finished async loading, let all listeners know.
+        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_COMPLETED, null);
     }
 
     #region CustomEventListeners

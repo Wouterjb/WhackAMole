@@ -83,6 +83,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2459242637360288970}
+  - component: {fileID: 2195225734263695593}
   m_Layer: 0
   m_Name: LoadingBar
   m_TagString: Untagged
@@ -112,6 +113,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 79}
   m_SizeDelta: {x: 800, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2195225734263695593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787386573953357546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda74d29429d2434a95d9892aac400ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingBarForeground: {fileID: 6838763670120140902}
+  loadingBarScreenStatusText: {fileID: 9177297304064106658}
 --- !u!1 &6838763670120140902
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +162,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 100}
+  m_SizeDelta: {x: 780, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2190708620627138483
 CanvasRenderer:
