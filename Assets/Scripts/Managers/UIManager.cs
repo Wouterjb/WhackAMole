@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
 
         // Subscribe to custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartedGame);
 
         // Set initial canvas active
         ActivateCanvas(firstActiveCanvas);
@@ -45,12 +46,7 @@ public class UIManager : MonoBehaviour
     public void OnDestroy()
     {
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
-    }
-
-    private void OnActivateCanvas(System.Object args)
-    {
-        if (args is GameObject)
-            ActivateCanvas((GameObject)args);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartedGame);
     }
 
     private void ActivateCanvas(GameObject canvas)
@@ -76,5 +72,16 @@ public class UIManager : MonoBehaviour
     {
         if (canvas != null)
             canvas.SetActive(false);
+    }
+
+    private void OnActivateCanvas(System.Object args)
+    {
+        if (args is GameObject)
+            ActivateCanvas((GameObject)args);
+    }
+
+    private void OnPlayerStartedGame(System.Object args)
+    {
+        DeActivateCanvas(currentActiveCanvas);
     }
 }

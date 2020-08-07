@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class GameManager : MonoBehaviour
     public string uiSceneName = string.Empty;
     public string loadingSceneName = string.Empty;
     public string gameSceneName = string.Empty;
+
+    [Header("Loading")]
+    [Tooltip("The minimal amount of time the loading screen should be shown")]
+    public float minimalLoadingScreenTime = 0.0f;
 
     // Collections
     private List<Scene> activeScenes = new List<Scene>();
@@ -78,7 +83,7 @@ public class GameManager : MonoBehaviour
     private void InitApplication()
     {
         // Load all necassary scenes
-        LoadScene(openingSceneName, false);
+        LoadScene(openingSceneName, false, false);
 
         // Hook up custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
@@ -106,17 +111,21 @@ public class GameManager : MonoBehaviour
 
     private void StartUIScene()
     {
-        // Load scenes
-        LoadScene(uiSceneName, true);
+        // Load the UI scene to show the start menu
+        LoadScene(uiSceneName, true, false);
         UnloadScene(openingSceneName);
     }
 
-    public void LoadScene(string sceneName, bool aSync)
+    public void LoadScene(string sceneName, bool aSync, bool forceMinimalLoadingTime)
     {
         if (aSync)
-            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        {
+            StartCoroutine(LoadSceneAsync(sceneName, forceMinimalLoadingTime));
+        }
         else
+        {
             SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+        }
     }
 
     public void UnloadScene(string sceneName)
@@ -134,6 +143,37 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(sceneName);
     }
 
+    private IEnumerator LoadSceneAsync(string sceneName, bool forceMinimalLoadingTime)
+    {
+        float showLoadingScreenTime = 0.0f;
+
+        if (forceMinimalLoadingTime)
+        {
+            // TODO: Set loading screen to waiting.
+
+            // Add a little waiting time, could be used to show tips or ads
+            while (showLoadingScreenTime < minimalLoadingScreenTime)
+            {
+                showLoadingScreenTime += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+        // TODO: Set loading screen to loading.
+
+        // Start the operation.
+        AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+        while (sceneLoadOperation.progress < 1)
+        {
+            // TODO: Update loading screen
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        // TODO: Update loading screen
+    }
+
     #region CustomEventListeners
 
     public void OnPlayerShowStartMenu(System.Object args)
@@ -143,7 +183,9 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerStartsGame(System.Object args)
     {
-        
+        // Show the game scene
+        LoadScene(loadingSceneName, false, false);
+        LoadScene(gameSceneName, true, true);
     }
 
     #endregion
