@@ -2,16 +2,25 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+public class Event : UnityEvent<System.Object>
+{
+}
+
 public class EventManager : MonoBehaviour
 {
+    // Enum
     public enum CustomEventType
     {
         EVENT_NONE = 0,
         EVENT_PLAYER_START_GAME = 1,
+        EVENT_ACTIVATE_CANVAS = 2,
     }
 
     // Singleton
     private static EventManager instance;
+
+    // Bool
+    private bool isInitialized = false;
 
     public static EventManager Instance
     {
@@ -19,7 +28,7 @@ public class EventManager : MonoBehaviour
     }
 
     // Collections
-    private Dictionary<CustomEventType, UnityEvent> eventLibrary;
+    private Dictionary<CustomEventType, Event> eventLibrary;
 
     // Awake is called at initialization of this class
     void Awake()
@@ -35,13 +44,14 @@ public class EventManager : MonoBehaviour
             return;
         }
 
-        eventLibrary = new Dictionary<CustomEventType, UnityEvent>();
+        isInitialized = true;
+        eventLibrary = new Dictionary<CustomEventType, Event>();
     }
 
-    public void AddListener(CustomEventType eventType, UnityAction listener)
+    public void AddListener(CustomEventType eventType, UnityAction<System.Object> listener)
     {
         // Check if already existing
-        UnityEvent unityEvent = null;
+        Event unityEvent = null;
         bool exists = eventLibrary.TryGetValue(eventType, out unityEvent);
 
         if (exists)
@@ -52,16 +62,16 @@ public class EventManager : MonoBehaviour
         else
         {
             // Create a new one
-            unityEvent = new UnityEvent();
+            unityEvent = new Event();
             unityEvent.AddListener(listener);
             eventLibrary.Add(eventType, unityEvent);
         }
     }
 
-    public void RemoveListener(CustomEventType eventType, UnityAction listener)
+    public void RemoveListener(CustomEventType eventType, UnityAction<System.Object> listener)
     {
         // Check if already existing
-        UnityEvent unityEvent = null;
+        Event unityEvent = null;
         bool exists = eventLibrary.TryGetValue(eventType, out unityEvent);
 
         // Remove listener
@@ -71,7 +81,7 @@ public class EventManager : MonoBehaviour
 
     public void RemoveAllListeners()
     {
-        foreach (KeyValuePair<CustomEventType, UnityEvent> kvp in eventLibrary)
+        foreach (KeyValuePair<CustomEventType, Event> kvp in eventLibrary)
         {
             kvp.Value.RemoveAllListeners();
         }
@@ -80,20 +90,29 @@ public class EventManager : MonoBehaviour
     public void RemoveAllListenersFor(CustomEventType eventType)
     {
         // Check if already existing
-        UnityEvent unityEvent = null;
+        Event unityEvent = null;
         bool exists = eventLibrary.TryGetValue(eventType, out unityEvent);
 
         unityEvent.RemoveAllListeners();
     }
 
-    public void TriggerEvent(CustomEventType eventType)
+    public void TriggerEvent(CustomEventType eventType, System.Object args)
     {
         // Check if already existing
-        UnityEvent unityEvent = null;
+        Event unityEvent = null;
         bool exists = eventLibrary.TryGetValue(eventType, out unityEvent);
 
         // Fire event.
         if (exists)
-            unityEvent.Invoke();
+            unityEvent.Invoke(args);
+    }
+
+    public void OnDestroy()
+    {
+        if (!isInitialized)
+            return;
+
+        // Release all listeners.
+        RemoveAllListeners();
     }
 }

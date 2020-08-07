@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
 
     // Editor variables
     [Header("Scenenames")]
-    public string managerSceneName = string.Empty;
     public string startSceneName = string.Empty;
+    public string openingSceneName = string.Empty;
     public string uiSceneName = string.Empty;
     public string loadingSceneName = string.Empty;
     public string gameSceneName = string.Empty;
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         activeScenes.Add(loadedScene);
         SceneManager.SetActiveScene(loadedScene);
 
-        if (loadedScene.name.Equals(managerSceneName))
+        if (loadedScene.name.Equals(startSceneName))
         {
             // Initialize game, this is the starting point.
             InitGame();
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
     private void InitGame()
     {
         // Load all necassary scenes
-        LoadScene(startSceneName, false);
+        LoadScene(openingSceneName, false);
 
         // Hook up custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
@@ -91,6 +91,7 @@ public class GameManager : MonoBehaviour
         // Last chance to properly unload all data
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -103,7 +104,7 @@ public class GameManager : MonoBehaviour
     {
         // Load scenes
         LoadScene(uiSceneName, true);
-        UnloadScene(startSceneName);
+        UnloadScene(openingSceneName);
     }
 
     private void QuitGame()
@@ -130,7 +131,7 @@ public class GameManager : MonoBehaviour
 
     #region CustomEventListeners
 
-    public void OnPlayerStartsGame()
+    public void OnPlayerStartsGame(System.Object args)
     {
         StartGame();
     }
