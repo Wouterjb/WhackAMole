@@ -45,19 +45,26 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
+    public void OnDestroy()
+    {
+        QuitApplication();
+    }
+
     public void OnSceneLoaded(Scene loadedScene, LoadSceneMode loadSceneMode)
     {
 #if UNITY_EDITOR
         Debug.Log("GameManager.OnSceneLoaded(): Loaded scene with name: " + loadedScene.name);
 #endif
 
+        // Loaded new scene, this is our active scene
         activeScenes.Add(loadedScene);
         SceneManager.SetActiveScene(loadedScene);
+        Debug.Log("GameManager.OnSceneLoaded(): Current active scene: " + SceneManager.GetActiveScene().name);
 
         if (loadedScene.name.Equals(startSceneName))
         {
-            // Initialize game, this is the starting point.
-            InitGame();
+            // Initialize app, this is the starting point.
+            InitApplication();
         }
     }
 
@@ -66,21 +73,15 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         Debug.Log("GameManager.OnSceneUnloaded(): Unloaded scene with name: " + unloadedScene.name);
 #endif
-
-        activeScenes.Remove(unloadedScene);
-        SceneManager.SetActiveScene(activeScenes[activeScenes.Count - 1]);
-
-        // Check for 0 active scenes, which means we are quitting the game
-        if (activeScenes.Count == 0)
-            QuitApplication();
     }
 
-    private void InitGame()
+    private void InitApplication()
     {
         // Load all necassary scenes
         LoadScene(openingSceneName, false);
 
         // Hook up custom events
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
 
         // Setup variables if needed..
@@ -91,6 +92,9 @@ public class GameManager : MonoBehaviour
         // Last chance to properly unload all data
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
+
+        // Remove custom event listeners
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
 
 #if UNITY_EDITOR
@@ -100,20 +104,11 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    private void StartGame()
+    private void StartUIScene()
     {
         // Load scenes
         LoadScene(uiSceneName, true);
         UnloadScene(openingSceneName);
-    }
-
-    private void QuitGame()
-    {
-        // Unload all scenes, unloading all scenes will result in the application quitting
-        for (int i = 0; i < activeScenes.Count; i++)
-        {
-            UnloadScene(activeScenes[i].name);
-        }
     }
 
     public void LoadScene(string sceneName, bool aSync)
@@ -126,14 +121,29 @@ public class GameManager : MonoBehaviour
 
     public void UnloadScene(string sceneName)
     {
+        // First remove from stack
+        activeScenes.RemoveAt(activeScenes.Count - 1);
+
+        // Set new scene active, there has to be an active scene before unloading
+        if (activeScenes.Count > 0)
+        {
+            SceneManager.SetActiveScene(activeScenes[activeScenes.Count - 1]);
+            Debug.Log("GameManager.UnloadScene(): Current active scene: " + SceneManager.GetActiveScene().name);
+        }
+
         SceneManager.UnloadSceneAsync(sceneName);
     }
 
     #region CustomEventListeners
 
+    public void OnPlayerShowStartMenu(System.Object args)
+    {
+        StartUIScene();
+    }
+
     public void OnPlayerStartsGame(System.Object args)
     {
-        StartGame();
+        
     }
 
     #endregion

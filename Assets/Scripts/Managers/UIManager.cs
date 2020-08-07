@@ -42,6 +42,11 @@ public class UIManager : MonoBehaviour
         ActivateCanvas(firstActiveCanvas);
     }
 
+    public void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
+    }
+
     private void OnActivateCanvas(System.Object args)
     {
         if (args is GameObject)

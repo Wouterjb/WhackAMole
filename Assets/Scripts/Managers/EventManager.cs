@@ -12,8 +12,9 @@ public class EventManager : MonoBehaviour
     public enum CustomEventType
     {
         EVENT_NONE = 0,
-        EVENT_PLAYER_START_GAME = 1,
+        EVENT_PLAYER_SHOW_START_MENU = 1,
         EVENT_ACTIVATE_CANVAS = 2,
+        EVENT_PLAYER_START_GAME = 3,
     }
 
     // Singleton
