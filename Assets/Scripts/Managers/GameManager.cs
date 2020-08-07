@@ -5,6 +5,16 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    // Struct
+    public struct SceneLoadOptions
+    {
+        public bool showLoadingScreen;
+        public float minLoadingTime;
+        public string nextSceneToLoad;
+
+        // TODO: Could add a queue if you want more than one scene to be loaded at a time, but out of the scope for this assignment
+    }
+
     // Singleton
     private static GameManager instance;
 
@@ -18,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Loading")]
     [Tooltip("The minimal amount of time the loading screen should be shown.")]
-    public float minimalLoadingScreenTime = 0.0f;
+    public float minimalLoadingGameSceneTime = 0.0f;
     [Tooltip("The text shown when loading starts.")]
     public string loadingText = "Loading..";
     [Tooltip("The text shown when waiting starts.")]
@@ -29,6 +39,9 @@ public class GameManager : MonoBehaviour
 
     // String
     private string currentActiveScene = string.Empty;
+
+    // References
+    private SceneLoadOptions currentSceneLoadOptions;
 
     public static GameManager Instance
     {
@@ -75,6 +88,11 @@ public class GameManager : MonoBehaviour
             // Initialize app, this is the starting point.
             InitApplication();
         }
+        else if (loadedScene.name.Equals(loadingSceneName))
+        {
+            // Done loading loading scene, start loading async
+            StartCoroutine(LoadSceneAsync(currentSceneLoadOptions));
+        }
     }
 
     public void OnSceneUnloaded(Scene unloadedScene)
@@ -87,7 +105,7 @@ public class GameManager : MonoBehaviour
     private void InitApplication()
     {
         // Load all necassary scenes
-        LoadScene(openingSceneName, false, false);
+        SceneManager.LoadScene(openingSceneName, LoadSceneMode.Additive);
 
         // Hook up custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
@@ -115,21 +133,23 @@ public class GameManager : MonoBehaviour
 
     private void StartUIScene()
     {
+        // Setup load options
+        currentSceneLoadOptions.showLoadingScreen = false;
+        currentSceneLoadOptions.minLoadingTime = 0.0f;
+        currentSceneLoadOptions.nextSceneToLoad = uiSceneName;
+
         // Load the UI scene to show the start menu
-        LoadScene(uiSceneName, true, false);
+        LoadSceneASync();
         UnloadScene(openingSceneName);
     }
 
-    public void LoadScene(string sceneName, bool aSync, bool forceMinimalLoadingTime)
+    public void LoadSceneASync()
     {
-        if (aSync)
-        {
-            StartCoroutine(LoadSceneAsync(sceneName, forceMinimalLoadingTime));
-        }
+        // Show loading screen if needed
+        if (currentSceneLoadOptions.showLoadingScreen)
+            SceneManager.LoadScene(loadingSceneName, LoadSceneMode.Additive);
         else
-        {
-            SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
-        }
+            StartCoroutine(LoadSceneAsync(currentSceneLoadOptions)); // TODO: this could be used to stream in another scene and close the current scene when done, but that is out of the scope of this assignment.
     }
 
     public void UnloadScene(string sceneName)
@@ -150,9 +170,9 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(sceneName);
     }
 
-    private IEnumerator LoadSceneAsync(string sceneName, bool forceMinimalLoadingTime)
+    private IEnumerator LoadSceneAsync(SceneLoadOptions sceneLoadOptions)
     {
-        if (forceMinimalLoadingTime)
+        if (sceneLoadOptions.minLoadingTime > 0.0f)
         {
             float showLoadingScreenTime = 0.0f;
 
@@ -160,11 +180,11 @@ public class GameManager : MonoBehaviour
             EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_STARTED, waitingText);
 
             // Add a little waiting time, could be used to show tips or ads by signaling the loading screen.
-            while (showLoadingScreenTime < minimalLoadingScreenTime)
+            while (showLoadingScreenTime < sceneLoadOptions.minLoadingTime)
             {
                 showLoadingScreenTime += Time.deltaTime;
 
-                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_PROGRESSED, (float)(showLoadingScreenTime / minimalLoadingScreenTime));
+                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_PROGRESSED, (float)(showLoadingScreenTime / sceneLoadOptions.minLoadingTime));
 
                 yield return new WaitForEndOfFrame();
             }
@@ -174,7 +194,7 @@ public class GameManager : MonoBehaviour
         EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_STARTED, loadingText);
 
         // Start the operation.
-        AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(sceneLoadOptions.nextSceneToLoad, LoadSceneMode.Additive);
 
         while (sceneLoadOperation.progress < 1)
         {
@@ -186,6 +206,11 @@ public class GameManager : MonoBehaviour
 
         // Finished async loading, let all listeners know.
         EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_LOADING_COMPLETED, null);
+
+        // Clean up
+        currentSceneLoadOptions.showLoadingScreen = false;
+        currentSceneLoadOptions.minLoadingTime = 0.0f;
+        currentSceneLoadOptions.nextSceneToLoad = string.Empty;
     }
 
     #region CustomEventListeners
@@ -197,9 +222,13 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerStartsGame(System.Object args)
     {
+        // Setup loading options
+        currentSceneLoadOptions.showLoadingScreen = true;
+        currentSceneLoadOptions.minLoadingTime = minimalLoadingGameSceneTime;
+        currentSceneLoadOptions.nextSceneToLoad = gameSceneName;
+
         // Show the game scene
-        LoadScene(loadingSceneName, false, false);
-        LoadScene(gameSceneName, true, true);
+        LoadSceneASync();
     }
 
     #endregion
