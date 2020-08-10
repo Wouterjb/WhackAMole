@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class AMole : MonoBehaviour, IMole 
+public abstract class AMole : MonoBehaviour, IMole
 {
 	// Editor variables
 	[Header("Mole properties")]

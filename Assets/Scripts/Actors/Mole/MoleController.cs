@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(NormalMole))]
-public class MoleController : MonoBehaviour
+public class MoleController : MonoBehaviour, IClickableActor
 {
     // Editor variables
     [Header("Mole life cycle properties")]
@@ -35,38 +35,33 @@ public class MoleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateInput();
         UpdateActiveTime();
     }
 
-    private void UpdateInput()
+    public void OnClick()
     {
-        // Detect click input.
-        if (Input.GetMouseButtonDown(0))
+        bool whackedMole = true;
+
+        for (int i = 0; i < moleBehaviours.Length; i++)
         {
-            bool whackedMole = true;
+            // Check all mole behaviours for succesful whacking; some behaviours might require double click or something else.
+            whackedMole = moleBehaviours[i].OnClick();
 
-            for (int i = 0; i < moleBehaviours.Length; i++)
+            // If not succesfull, stop checking, there's no score to be had
+            if (!whackedMole)
             {
-                // Check all mole behaviours for succesful whacking; some behaviours might require double click or something else.
-                whackedMole = moleBehaviours[i].OnClick();
-
-                // If not succesfull, stop checking, there's no score to be had
-                if (!whackedMole)
-                {
-                    // Could check here for a penalty on the mole; for example, if a mole has spikes and the player clicks on it, raise an event to deduct score
-                    break;
-                }
+                // Could check here for a penalty on the mole; for example, if a mole has spikes and the player clicks on it, raise an event to deduct score
+                break;
             }
+        }
 
-            if (whackedMole)
-            {
-                // Fire event
-                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_SCORED_POINTS, totalPoints);
+        if (whackedMole)
+        {
+            // Fire event
+            EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_SCORED_POINTS, totalPoints);
 
-                // Whacked the mole, clean it up.
-                CleanUpMole();
-            }
+            // Whacked the mole, clean it up.
+            CleanUpMole();
         }
     }
 
