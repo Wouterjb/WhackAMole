@@ -19,6 +19,7 @@ public class EventManager : MonoBehaviour
         EVENT_LOADING_COMPLETED = 5,
         EVENT_LOADING_PROGRESSED = 6,
         EVENT_UPDATE_HIGHSCORE = 7,
+        EVENT_SCORED_POINTS = 8,
     }
 
     // Singleton
