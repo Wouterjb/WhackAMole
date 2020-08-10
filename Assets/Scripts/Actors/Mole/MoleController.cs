@@ -13,14 +13,18 @@ public class MoleController : MonoBehaviour
 
     // Numbers
     private int totalPoints = 0;
-    private float currentActiveTime = 0;
+    private float currentActiveTime = 0.0f;
+
+    // Awake is called at initialization of this class
+    void Awake()
+    {
+        // Gather up all the mole behaviours
+        moleBehaviours = this.gameObject.GetComponents<IMole>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        // Gather up all the mole behaviours
-        moleBehaviours = this.gameObject.GetComponents<IMole>();
-
         // Calculate total score for this mole
         for (int i = 0; i < moleBehaviours.Length; i++)
         {

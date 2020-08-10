@@ -10,16 +10,21 @@ public class CameraController : MonoBehaviour
     // Objects
     private DeviceOrientation currentOrientation;
 
+    // Awake is called at initialization of this class
     void Awake()
+    {
+#if UNITY_ANDROID
+        currentOrientation = Input.deviceOrientation;
+#endif
+    }
+
+    // Start is called before the first frame update
+    void Start()
     {
         if (background == null)
             Debug.Log("CameraController.Awake(): No background gameobject assigned!");
         else
             AdjustBackgroundSize();  // Set initial background size and position
-
-#if UNITY_ANDROID
-        currentOrientation = Input.deviceOrientation;
-#endif
     }
 
     // Update is called once per frame
