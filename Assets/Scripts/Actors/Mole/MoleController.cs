@@ -9,7 +9,7 @@ public class MoleController : MonoBehaviour
     public float maxActiveTime = 0;
 
     // Collections
-    private IMole[] moleBehaviours;
+    private IMole[] moleBehaviours = null;
 
     // Numbers
     private int totalPoints = 0;
@@ -44,7 +44,15 @@ public class MoleController : MonoBehaviour
 
             for (int i = 0; i < moleBehaviours.Length; i++)
             {
-                moleBehaviours[i].OnClick();
+                // Check all mole behaviours for succesful whacking; some behaviours might require double click or something else.
+                whackedMole = moleBehaviours[i].OnClick();
+
+                // If not succesfull, stop checking, there's no score to be had
+                if (!whackedMole)
+                {
+                    // Could check here for a penalty on the mole; for example, if a mole has spikes and the player clicks on it, raise an event to deduct score
+                    break;
+                }
             }
 
             if (whackedMole)
@@ -60,6 +68,7 @@ public class MoleController : MonoBehaviour
 
     private void UpdateActiveTime()
     {
+        // Keep track of current activation time.
         currentActiveTime += Time.deltaTime;
 
         if (currentActiveTime >= maxActiveTime)
