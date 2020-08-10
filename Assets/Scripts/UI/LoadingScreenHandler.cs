@@ -11,6 +11,7 @@ public class LoadingScreenHandler : MonoBehaviour
 		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_LOADING_COMPLETED, OnLoadingCompleted);
 	}
 
+	// OnDestroy is called when the object is being destroyed
 	public void OnDestroy()
 	{
 		EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_LOADING_COMPLETED, OnLoadingCompleted);

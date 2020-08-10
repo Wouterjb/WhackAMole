@@ -16,6 +16,7 @@ public class LoadingBar : MonoBehaviour
 		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_LOADING_PROGRESSED, OnLoadingProgressed);
 	}
 
+	// OnDestroy is called when the object is being destroyed
 	public void OnDestroy()
 	{
 		EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_LOADING_STARTED, OnLoadingStarted);

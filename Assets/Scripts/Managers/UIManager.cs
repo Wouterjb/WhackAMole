@@ -43,6 +43,7 @@ public class UIManager : MonoBehaviour
         ActivateCanvas(firstActiveCanvas);
     }
 
+    // OnDestroy is called when the object is being destroyed
     public void OnDestroy()
     {
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);

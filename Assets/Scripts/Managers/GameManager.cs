@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
+    // OnDestroy is called when the object is being destroyed
     public void OnDestroy()
     {
         QuitApplication();
@@ -81,12 +82,20 @@ public class GameManager : MonoBehaviour
         // Loaded new scene, this is our active scene
         activeScenes.Add(loadedScene);
         SceneManager.SetActiveScene(loadedScene);
+
+#if UNITY_EDITOR
         Debug.Log("GameManager.OnSceneLoaded(): Current active scene: " + SceneManager.GetActiveScene().name);
+#endif
 
         if (loadedScene.name.Equals(startSceneName))
         {
             // Initialize app, this is the starting point.
             InitApplication();
+        }
+        else if (loadedScene.name.Equals(uiSceneName))
+        {
+            // Done loading after the initial start screen, this is the point where the player has signed in, if there were such functionality.
+            InitPlayer();
         }
         else if (loadedScene.name.Equals(loadingSceneName))
         {
@@ -129,6 +138,14 @@ public class GameManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    private void InitPlayer()
+    {
+        // Use this as entry point for loading player info; high score, player name etc.
+
+        // TODO: Retrieve highscore from storage
+        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_UPDATE_HIGHSCORE, 0);
     }
 
     private void StartUIScene()

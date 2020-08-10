@@ -18,6 +18,7 @@ public class EventManager : MonoBehaviour
         EVENT_LOADING_STARTED = 4,
         EVENT_LOADING_COMPLETED = 5,
         EVENT_LOADING_PROGRESSED = 6,
+        EVENT_UPDATE_HIGHSCORE = 7,
     }
 
     // Singleton
@@ -111,6 +112,7 @@ public class EventManager : MonoBehaviour
             unityEvent.Invoke(args);
     }
 
+    // OnDestroy is called when the object is being destroyed
     public void OnDestroy()
     {
         if (!isInitialized)
