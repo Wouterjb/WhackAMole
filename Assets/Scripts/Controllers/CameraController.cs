@@ -35,7 +35,6 @@ public class CameraController : MonoBehaviour
 #endif
     }
 
-    // TODO: Should be called when changing aspect from/to landscape/portrait, must be an event somewhere.
     private void AdjustBackgroundSize()
     {
         if (background == null)

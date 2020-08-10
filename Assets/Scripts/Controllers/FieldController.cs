@@ -12,23 +12,38 @@ public class FieldController : MonoBehaviour
     public int maxSpawnInterval = 3;
 
     // Collections
-    private Hole[] holes = null;
+    private HoleController[] holes = null;
 
     // Numbers
-    private int activeAmountOfMoles = 0;
-    private float currentSpawnInterval = 0.0f;
-    private float currentSpawnTimer = 0.0f;
+    private float currentActivationInterval = 0.0f;
+    private float currentActivationTimer = 0.0f;
 
     private int AmountOfHoles
     {
         get { return holes.Length; }
     }
 
+    private int AmountOfActiveHoles
+    {
+        get
+        {
+            int activeHoles = 0;
+
+            for (int i = 0; i < holes.Length; i++)
+            {
+                if (holes[i].HasActiveMole)
+                    activeHoles++;
+            }
+
+            return activeHoles;
+        }
+    }
+
     // Awake is called at initialization of this class
     void Awake()
     {
         // Gather all holes that belong to this field
-        holes = this.gameObject.GetComponentsInChildren<Hole>();
+        holes = this.gameObject.GetComponentsInChildren<HoleController>();
     }
 
     // Start is called before the first frame update
@@ -38,7 +53,7 @@ public class FieldController : MonoBehaviour
         maxAmountOfMoles = Mathf.Min(AmountOfHoles, maxAmountOfMoles);
 
         // Generate new spawn time interval
-        GenerateNewSpawnInterval();
+        GenerateNewInterval();
     }
 
     // Update is called once per frame
@@ -49,33 +64,37 @@ public class FieldController : MonoBehaviour
 
     private void UpdateTimers()
     {
-        if (activeAmountOfMoles <= maxAmountOfMoles)
+        if (AmountOfActiveHoles <= maxAmountOfMoles)
         {
-            currentSpawnTimer += Time.deltaTime;
+            currentActivationTimer += Time.deltaTime;
 
-            if (currentSpawnTimer >= currentSpawnInterval)
+            if (currentActivationTimer >= currentActivationInterval)
             {
-                // Spawn new mole.
-                SpawnNewMole();
-
-                // Keep track of variables
-                activeAmountOfMoles++;
-                currentSpawnTimer = 0.0f;
+                // Activate hole
+                ActivateHole();
 
                 // Generate new interval
-                GenerateNewSpawnInterval();
+                GenerateNewInterval();
+
+                // Keep track of variables
+                currentActivationTimer = 0.0f;
             }
         }
     }
 
-    private void GenerateNewSpawnInterval()
+    private void GenerateNewInterval()
     {
-        currentSpawnInterval = Random.Range(minSpawnInterval, maxSpawnInterval);
+        currentActivationInterval = Random.Range(minSpawnInterval, maxSpawnInterval);
     }
 
-    private void SpawnNewMole()
+    private void ActivateHole()
     {
-        // TODO
-        // Determine where to spawn a mole; when a hole already has a mole, do not spawn it there, but another place etc.
+        // Determine next hole to activate
+        int nextHole = Random.Range(0, AmountOfHoles - 1);
+
+        while (holes[nextHole].HasActiveMole)
+            nextHole = Random.Range(0, AmountOfHoles - 1);
+
+        holes[nextHole].Activate();
     }
 }
