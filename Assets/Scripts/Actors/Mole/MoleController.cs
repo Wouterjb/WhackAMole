@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(NormalMole))]
+[RequireComponent(typeof(Collider2D))]
 public class MoleController : MonoBehaviour, IClickableActor
 {
     // Editor variables

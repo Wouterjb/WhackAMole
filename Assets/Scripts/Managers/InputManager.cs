@@ -35,11 +35,14 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            // Detected input from the mouse, let's see if we have something that is being clicked
+            // First convert to a screen coordinate and use that to raycast and detect colliders.
             Vector2 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D raycastHit = Physics2D.Raycast(screenPos, Vector3.zero);
             
             if (raycastHit.collider != null)
             {
+                // Found a collider under the click, let's call OnClick if there is a IClickableActor
                 IClickableActor clickableActor = raycastHit.collider.gameObject.GetComponent<IClickableActor>();
 
                 if (clickableActor != null)
