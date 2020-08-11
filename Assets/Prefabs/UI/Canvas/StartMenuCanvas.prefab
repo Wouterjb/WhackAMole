@@ -498,7 +498,7 @@ PrefabInstance:
     - target: {fileID: 2667810611236190479, guid: 2895b2cf4ac008041a73945a864439e3,
         type: 3}
       propertyPath: eventToTrigger
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2722770627050266569, guid: 2895b2cf4ac008041a73945a864439e3,
         type: 3}
