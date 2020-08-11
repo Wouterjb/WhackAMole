@@ -40,6 +40,7 @@ public class UIManager : MonoBehaviour
         // Subscribe to custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_STOP, OnPlayerStop);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnded);
 
@@ -51,6 +52,7 @@ public class UIManager : MonoBehaviour
     {
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_STOP, OnPlayerStop);
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnded);
     }
@@ -89,6 +91,11 @@ public class UIManager : MonoBehaviour
     private void OnPlayerStart(System.Object args)
     {
         DeActivateCanvas(currentActiveCanvas);
+    }
+
+    private void OnPlayerStop(System.Object args)
+    {
+        ActivateCanvas(startScreen);
     }
 
     private void OnSessionReady(System.Object args)

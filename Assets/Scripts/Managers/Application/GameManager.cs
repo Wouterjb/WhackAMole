@@ -117,8 +117,9 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(openingSceneName, LoadSceneMode.Additive);
 
         // Hook up custom events
-        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
-        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStartsSession);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_INIT_GAME, OnInitGame);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_STOP, OnPlayerStop);
 
         // Setup variables if needed..
     }
@@ -130,26 +131,15 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
 
         // Remove custom event listeners
-        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
-        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStartsSession);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_INIT_GAME, OnInitGame);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_STOP, OnPlayerStop);
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
-    }
-
-    private void StartUIScene()
-    {
-        // Setup load options
-        currentSceneLoadOptions.showLoadingScreen = false;
-        currentSceneLoadOptions.minLoadingTime = 0.0f;
-        currentSceneLoadOptions.nextSceneToLoad = uiSceneName;
-
-        // Load the UI scene to show the start menu
-        LoadSceneASync();
-        UnloadScene(openingSceneName);
     }
 
     public void LoadSceneASync()
@@ -224,12 +214,19 @@ public class GameManager : MonoBehaviour
 
     #region CustomEventListeners
 
-    public void OnPlayerShowStartMenu(System.Object args)
+    public void OnInitGame(System.Object args)
     {
-        StartUIScene();
+        // Setup load options
+        currentSceneLoadOptions.showLoadingScreen = false;
+        currentSceneLoadOptions.minLoadingTime = 0.0f;
+        currentSceneLoadOptions.nextSceneToLoad = uiSceneName;
+
+        // Load the UI scene to show the start menu
+        LoadSceneASync();
+        UnloadScene(openingSceneName);
     }
 
-    public void OnPlayerStartsSession(System.Object args)
+    public void OnPlayerStart(System.Object args)
     {
         // Setup loading options
         currentSceneLoadOptions.showLoadingScreen = true;
@@ -238,6 +235,13 @@ public class GameManager : MonoBehaviour
 
         // Show the game scene
         LoadSceneASync();
+    }
+
+    public void OnPlayerStop(System.Object args)
+    {
+        // Unload current scene
+        UnloadScene(gameSceneName);
+        UnloadScene(loadingSceneName);
     }
 
     #endregion

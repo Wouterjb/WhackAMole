@@ -23,6 +23,13 @@ public class HudHandler : MonoBehaviour
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_UPDATE_SESSION_TIME, OnTimeLeftUpdate);
     }
 
+    // This function is called when the object becomes enabled
+    public void OnEnable()
+    {
+        scoreText.GetComponent<Text>().text = "0";
+        timeText.GetComponent<Text>().text = string.Empty;
+    }
+
     private void OnTotalScoredPoints(System.Object args)
     {
         scoreText.GetComponent<Text>().text = args.ToString();

@@ -12,7 +12,7 @@ public class EventManager : MonoBehaviour
     public enum CustomEventType
     {
         EVENT_NONE = 0,
-        EVENT_PLAYER_SHOW_START_MENU = 1,
+        EVENT_INIT_GAME = 1,
         EVENT_ACTIVATE_CANVAS = 2,
         EVENT_PLAYER_START = 3,
         EVENT_PLAYER_STOP = 4,
