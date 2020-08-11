@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
+using UnityEngine;
 
 public class Highscore : MonoBehaviour
 {
@@ -11,24 +11,12 @@ public class Highscore : MonoBehaviour
 	{
 		// Retrieve UI element
 		highscoreText = this.gameObject.GetComponent<Text>();
+		highscoreText.text = StorageManager.Instance.playerHighestScore.ToString();
 	}
 
-	// Start is called before the first frame update
-	public void Start()
+	// This function is called when the object becomes enabled or active
+	public void OnEnable()
 	{
-		// Start listening
-		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_NEW_HIGHSCORE, OnHighscoreUpdated);
-	}
-
-	// OnDestroy is called when the object is being destroyed
-	public void OnDestroy()
-	{
-		EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_NEW_HIGHSCORE, OnHighscoreUpdated);
-	}
-
-	private void OnHighscoreUpdated(System.Object args)
-	{
-		// Update current highscore.
-		highscoreText.text = args.ToString();
+		highscoreText.text = StorageManager.Instance.playerHighestScore.ToString();
 	}
 }
