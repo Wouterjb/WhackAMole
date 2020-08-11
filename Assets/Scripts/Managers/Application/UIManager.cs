@@ -11,6 +11,9 @@ public class UIManager : MonoBehaviour
     public GameObject endScreen;
     public GameObject playerHud;
 
+    [Header("Listener initialization")]
+    public GameObject[] listeners;
+
     // References
     private GameObject currentActiveCanvas = null;
 
@@ -44,6 +47,13 @@ public class UIManager : MonoBehaviour
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnded);
 
+        // Pre-init event listeners for other user interfaces
+        for (int i = 0; i < listeners.Length; i++)
+        {
+            listeners[i].GetComponent<IUIEvent>().InitEventListener();
+        }
+
+        // Activate start screen when starting.
         ActivateCanvas(startScreen);
     }
 
