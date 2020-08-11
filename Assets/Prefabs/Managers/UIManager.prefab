@@ -43,7 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9bd955177f76c946b8c2e5186df737d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startMenuCanvas: {fileID: 0}
-  optionsMenuCanvas: {fileID: 0}
-  hudCanvas: {fileID: 0}
-  firstActiveCanvas: {fileID: 0}
+  startMenuCanvas: {fileID: 8618209699343466284, guid: 8e9fef7131fe9a646b33f887f14d84ac,
+    type: 3}
+  optionsMenuCanvas: {fileID: 1932932463362468856, guid: 303ad67be5549224d9cf7d39e8549ed9,
+    type: 3}
+  hudCanvas: {fileID: 4838923296078375152, guid: 3329c0d0a47740f48a3cf2971e0a0394,
+    type: 3}
+  firstActiveCanvas: {fileID: 4920629069815197222, guid: 79847acbf84390b4d93c64977b5632bb,
+    type: 3}
