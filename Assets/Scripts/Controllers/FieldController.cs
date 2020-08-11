@@ -7,9 +7,9 @@ public class FieldController : MonoBehaviour
     [Tooltip("The maximum amount of moles visible")]
     public int maxAmountOfMoles = 3; // This could also be dependant on a difficulty grade
     [Tooltip("The minimum amount of time to wait for a mole to spawn")]
-    public int minSpawnInterval = 1;
+    public float minSpawnInterval = 1;
     [Tooltip("The maximum amount of time to wait for a mole to spawn")]
-    public int maxSpawnInterval = 3;
+    public float maxSpawnInterval = 3;
 
     // Collections
     private HoleController[] holes = null;
@@ -17,6 +17,9 @@ public class FieldController : MonoBehaviour
     // Numbers
     private float currentActivationInterval = 0.0f;
     private float currentActivationTimer = 0.0f;
+
+    // Bool
+    private bool sessionStarted = true;
 
     private int AmountOfHoles
     {
@@ -54,12 +57,21 @@ public class FieldController : MonoBehaviour
 
         // Generate new spawn time interval
         GenerateNewInterval();
+
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnd);
+    }
+
+    // OnDestroy is called when the object is being destroyed
+    public void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnd);
     }
 
     // Update is called once per frame
     public void Update()
     {
-        UpdateTimers();
+        if (sessionStarted)
+            UpdateTimers();
     }
 
     private void UpdateTimers()
@@ -96,5 +108,10 @@ public class FieldController : MonoBehaviour
             nextHole = Random.Range(0, AmountOfHoles - 1);
 
         holes[nextHole].Activate();
+    }
+
+    private void OnSessionEnd(System.Object args)
+    {
+        sessionStarted = false;
     }
 }

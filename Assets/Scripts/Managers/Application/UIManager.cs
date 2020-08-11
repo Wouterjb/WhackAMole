@@ -38,8 +38,8 @@ public class UIManager : MonoBehaviour
     {
         // Subscribe to custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
-        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_SESSION, OnPlayerStartedSession);
-        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_GAME_SCENE_READY, OnGameSceneReady);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
 
         ActivateCanvas(startScreen);
     }
@@ -48,8 +48,8 @@ public class UIManager : MonoBehaviour
     public void OnDestroy()
     {
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
-        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_SESSION, OnPlayerStartedSession);
-        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_GAME_SCENE_READY, OnGameSceneReady);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
     }
 
     private void ActivateCanvas(GameObject canvas)
@@ -83,12 +83,12 @@ public class UIManager : MonoBehaviour
             ActivateCanvas((GameObject)args);
     }
 
-    private void OnPlayerStartedSession(System.Object args)
+    private void OnPlayerStart(System.Object args)
     {
         DeActivateCanvas(currentActiveCanvas);
     }
 
-    private void OnGameSceneReady(System.Object args)
+    private void OnSessionReady(System.Object args)
     {
         ActivateCanvas(playerHud);
     }
