@@ -6,8 +6,10 @@ public class MoleController : MonoBehaviour, IClickableActor
 {
     // Editor variables
     [Header("Mole life cycle properties")]
-    [Tooltip("The amount of time the mole stays active")]
-    public float maxActiveTime = 0;
+    [Tooltip("The minimum amount of time the mole stays active")]
+    public float minActiveTime = 1;
+    [Tooltip("The maximum amount of time the mole stays active")]
+    public float maxActiveTime = 3; 
 
     // Collections
     private IMole[] moleBehaviours = null;
@@ -15,6 +17,7 @@ public class MoleController : MonoBehaviour, IClickableActor
     // Numbers
     private int totalPoints = 0;
     private float currentActiveTime = 0.0f;
+    private float moleActiveTime = 0.0f;
 
     // Awake is called at initialization of this class
     void Awake()
@@ -31,6 +34,9 @@ public class MoleController : MonoBehaviour, IClickableActor
         {
             totalPoints = moleBehaviours[i].Points;
         }
+
+        // Set mole active time
+        moleActiveTime = Random.Range(minActiveTime, maxActiveTime);
     }
 
     // Update is called once per frame
@@ -71,7 +77,7 @@ public class MoleController : MonoBehaviour, IClickableActor
         // Keep track of current activation time.
         currentActiveTime += Time.deltaTime;
 
-        if (currentActiveTime >= maxActiveTime)
+        if (currentActiveTime >= moleActiveTime)
             CleanUpMole();
     }
 
