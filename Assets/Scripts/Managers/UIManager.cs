@@ -11,9 +11,6 @@ public class UIManager : MonoBehaviour
     public GameObject optionsMenuCanvas = null;
     public GameObject hudCanvas = null;
 
-    [Header("Initialization")]
-    public GameObject firstActiveCanvas = null;
-
     // References
     private GameObject currentActiveCanvas = null;
 
@@ -34,13 +31,13 @@ public class UIManager : MonoBehaviour
             Destroy(this);
             return;
         }
+    }
 
+    public void Start()
+    {
         // Subscribe to custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartedGame);
-
-        // Set initial canvas active
-        ActivateCanvas(firstActiveCanvas);
     }
 
     // OnDestroy is called when the object is being destroyed

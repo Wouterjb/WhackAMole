@@ -37,7 +37,7 @@ public class EventManager : MonoBehaviour
     private Dictionary<CustomEventType, Event> eventLibrary;
 
     // Awake is called at initialization of this class
-    void Awake()
+    public void Awake()
     {
         // Singleton creation
         if (instance == null)

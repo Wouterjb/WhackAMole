@@ -5,8 +5,8 @@
 /// </summary>
 public class LoadingScreenHandler : MonoBehaviour
 {
-	// Awake is called at initialization of this class
-	public void Awake()
+	// Start is called before the first frame update
+	public void Start()
 	{
 		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_LOADING_COMPLETED, OnLoadingCompleted);
 	}

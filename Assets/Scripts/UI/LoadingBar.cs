@@ -8,8 +8,8 @@ public class LoadingBar : MonoBehaviour
 	public GameObject loadingBarForeground;
 	public GameObject loadingBarScreenStatusText;
 
-	// Awake is called at initialization of this class
-	public void Awake()
+	// Start is called before the first frame update
+	public void Start()
 	{
 		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_LOADING_STARTED, OnLoadingStarted);
 		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_LOADING_COMPLETED, OnLoadingCompleted);

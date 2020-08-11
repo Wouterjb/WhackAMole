@@ -40,14 +40,14 @@ public class FieldController : MonoBehaviour
     }
 
     // Awake is called at initialization of this class
-    void Awake()
+    public void Awake()
     {
         // Gather all holes that belong to this field
         holes = this.gameObject.GetComponentsInChildren<HoleController>();
     }
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         // Limit max amount of moles by the amount of holes available.
         maxAmountOfMoles = Mathf.Min(AmountOfHoles, maxAmountOfMoles);
@@ -57,7 +57,7 @@ public class FieldController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         UpdateTimers();
     }

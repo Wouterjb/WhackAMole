@@ -61,7 +61,10 @@ public class GameManager : MonoBehaviour
             Destroy(this);
             return;
         }
+    }
 
+    public void Start()
+    {
         // Hook up scene event listeners
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -95,7 +98,7 @@ public class GameManager : MonoBehaviour
         else if (loadedScene.name.Equals(uiSceneName))
         {
             // Done loading after the initial start screen, this is the point where the player has signed in, if there were such functionality.
-            InitPlayer();
+            // TODO Retrieve player highscore from storage; event to storage manager
         }
         else if (loadedScene.name.Equals(loadingSceneName))
         {
@@ -138,14 +141,6 @@ public class GameManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
-    }
-
-    private void InitPlayer()
-    {
-        // Use this as entry point for loading player info; high score, player name etc.
-
-        // TODO: Retrieve highscore from storage
-        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_UPDATE_HIGHSCORE, 0);
     }
 
     private void StartUIScene()

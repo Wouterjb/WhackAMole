@@ -7,17 +7,20 @@ public class Highscore : MonoBehaviour
 	private Text highscoreText = null;
 
 	// Awake is called at initialization of this class
-	void Awake()
+	public void Awake()
 	{
-		// Start listening
-		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_UPDATE_HIGHSCORE, OnHighscoreUpdated);
-
 		// Retrieve UI element
 		highscoreText = this.gameObject.GetComponent<Text>();
 	}
 
+	public void Start()
+	{
+		// Start listening
+		EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_UPDATE_HIGHSCORE, OnHighscoreUpdated);
+	}
+
 	// OnDestroy is called when the object is being destroyed
-	void OnDestroy()
+	public void OnDestroy()
 	{
 		EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_UPDATE_HIGHSCORE, OnHighscoreUpdated);
 	}

@@ -34,7 +34,7 @@ public class MoleController : MonoBehaviour, IClickableActor
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         UpdateActiveTime();
     }
