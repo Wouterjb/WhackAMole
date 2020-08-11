@@ -35,19 +35,27 @@ public class Session : MonoBehaviour
             currentSessionTime += Time.deltaTime;
 
             if (currentSessionTime >= sessionTime)
-            {
-                sessionEnded = true;
-
+            {   
                 // End game.
-                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_TOTAL_SCORED_POINTS, totalScore);
-                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_SESSION_END, null);
-                EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_UPDATE_SESSION_TIME, 0.0f);
+                EndSession();
             }
             else
             {
                 EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_UPDATE_SESSION_TIME, sessionTime - currentSessionTime);
             }
         }
+    }
+
+    private void EndSession()
+    {
+        sessionEnded = true;
+
+        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_TOTAL_SCORED_POINTS, totalScore);
+        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_SESSION_END, null);
+        EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_UPDATE_SESSION_TIME, 0.0f);
+
+        if (totalScore > StorageManager.Instance.playerHighestScore)
+            EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_NEW_HIGHSCORE, totalScore);
     }
 
     private void OnScoredPoints(System.Object args)
