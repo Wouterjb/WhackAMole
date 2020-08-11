@@ -5,11 +5,10 @@ public class UIManager : MonoBehaviour
     // Singleton
     private static UIManager instance;
 
-    // Editorvariables
-    [Header("Canvas objects")]
-    public GameObject startMenuCanvas = null;
-    public GameObject optionsMenuCanvas = null;
-    public GameObject hudCanvas = null;
+    // Editor variables
+    [Header("User interface references")]
+    public GameObject startScreen;
+    public GameObject playerHud;
 
     // References
     private GameObject currentActiveCanvas = null;
@@ -19,6 +18,7 @@ public class UIManager : MonoBehaviour
         get { return instance; }
     }
 
+    // Awake is called at initialization of this class
     public void Awake()
     {
         // Singleton creation
@@ -33,18 +33,23 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Start is called before the first frame update
     public void Start()
     {
         // Subscribe to custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
-        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartedGame);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_SESSION, OnPlayerStartedSession);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_GAME_SCENE_READY, OnGameSceneReady);
+
+        ActivateCanvas(startScreen);
     }
 
     // OnDestroy is called when the object is being destroyed
     public void OnDestroy()
     {
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
-        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartedGame);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_SESSION, OnPlayerStartedSession);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_GAME_SCENE_READY, OnGameSceneReady);
     }
 
     private void ActivateCanvas(GameObject canvas)
@@ -78,8 +83,13 @@ public class UIManager : MonoBehaviour
             ActivateCanvas((GameObject)args);
     }
 
-    private void OnPlayerStartedGame(System.Object args)
+    private void OnPlayerStartedSession(System.Object args)
     {
         DeActivateCanvas(currentActiveCanvas);
+    }
+
+    private void OnGameSceneReady(System.Object args)
+    {
+        ActivateCanvas(playerHud);
     }
 }

@@ -166,6 +166,16 @@ PrefabInstance:
       propertyPath: firstActiveCanvas
       value: 
       objectReference: {fileID: 408015406}
+    - target: {fileID: 1457381867234194208, guid: 05f2fceed8d4b5e4a96c1a3d9ca37f00,
+        type: 3}
+      propertyPath: playerHud
+      value: 
+      objectReference: {fileID: 294745013}
+    - target: {fileID: 1457381867234194208, guid: 05f2fceed8d4b5e4a96c1a3d9ca37f00,
+        type: 3}
+      propertyPath: startScreen
+      value: 
+      objectReference: {fileID: 408015406}
     - target: {fileID: 1457381867234194210, guid: 05f2fceed8d4b5e4a96c1a3d9ca37f00,
         type: 3}
       propertyPath: m_Name
@@ -634,7 +644,7 @@ PrefabInstance:
     - target: {fileID: 8618209699343466284, guid: 8e9fef7131fe9a646b33f887f14d84ac,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8618209699343466288, guid: 8e9fef7131fe9a646b33f887f14d84ac,
         type: 3}

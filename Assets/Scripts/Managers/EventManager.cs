@@ -14,12 +14,13 @@ public class EventManager : MonoBehaviour
         EVENT_NONE = 0,
         EVENT_PLAYER_SHOW_START_MENU = 1,
         EVENT_ACTIVATE_CANVAS = 2,
-        EVENT_PLAYER_START_GAME = 3,
+        EVENT_PLAYER_START_SESSION = 3,
         EVENT_LOADING_STARTED = 4,
         EVENT_LOADING_COMPLETED = 5,
         EVENT_LOADING_PROGRESSED = 6,
         EVENT_UPDATE_HIGHSCORE = 7,
         EVENT_SCORED_POINTS = 8,
+        EVENT_GAME_SCENE_READY = 9,
     }
 
     // Singleton

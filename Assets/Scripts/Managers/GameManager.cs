@@ -61,10 +61,7 @@ public class GameManager : MonoBehaviour
             Destroy(this);
             return;
         }
-    }
 
-    public void Start()
-    {
         // Hook up scene event listeners
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -104,6 +101,11 @@ public class GameManager : MonoBehaviour
         {
             // Done loading loading scene, start loading async
             StartCoroutine(LoadSceneAsync(currentSceneLoadOptions));
+        } 
+        else if (loadedScene.name.Equals(gameSceneName))
+        {
+            // Gamescene loaded
+            EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_GAME_SCENE_READY, null);
         }
     }
 
@@ -121,7 +123,7 @@ public class GameManager : MonoBehaviour
 
         // Hook up custom events
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
-        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START_SESSION, OnPlayerStartsSession);
 
         // Setup variables if needed..
     }
@@ -134,7 +136,7 @@ public class GameManager : MonoBehaviour
 
         // Remove custom event listeners
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_SHOW_START_MENU, OnPlayerShowStartMenu);
-        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_GAME, OnPlayerStartsGame);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START_SESSION, OnPlayerStartsSession);
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -232,7 +234,7 @@ public class GameManager : MonoBehaviour
         StartUIScene();
     }
 
-    public void OnPlayerStartsGame(System.Object args)
+    public void OnPlayerStartsSession(System.Object args)
     {
         // Setup loading options
         currentSceneLoadOptions.showLoadingScreen = true;
