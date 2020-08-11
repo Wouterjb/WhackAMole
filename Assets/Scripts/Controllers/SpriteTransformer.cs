@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class SpriteTransformer : MonoBehaviour
 {
-    // Editor variables
-    [Header("Camera variables")]
-    [Tooltip("The background object that will always be fit to screen orientation and size")]
-    public GameObject background;
-
-    // Objects
+    // References
     private DeviceOrientation currentOrientation;
+
+    // Vector
+    private Vector2 originalSpriteScale = Vector2.one;
 
     // Awake is called at initialization of this class
     public void Awake()
@@ -16,15 +14,15 @@ public class CameraController : MonoBehaviour
 #if UNITY_ANDROID
         currentOrientation = Input.deviceOrientation;
 #endif
+        originalSpriteScale = this.gameObject.transform.localScale;
     }
 
     // Start is called before the first frame update
     public void Start()
     {
-        if (background == null)
-            Debug.Log("CameraController.Awake(): No background gameobject assigned!");
-        else
-            AdjustBackgroundSize();  // Set initial background size and position
+        AdjustBackgroundSize();
+
+        //Debug.Log("BackgroundController.Start(): localPos: " + this.gameObject.transform.localPosition);
     }
 
     // Update is called once per frame
@@ -33,15 +31,16 @@ public class CameraController : MonoBehaviour
 #if UNITY_ANDROID
         DetectOrientationChange();
 #endif
+
+#if UNITY_EDITOR
+        AdjustBackgroundSize();
+#endif
     }
 
     private void AdjustBackgroundSize()
     {
-        if (background == null)
-            return;
-
         // Get components
-        SpriteRenderer backgroundSpriteRenderer = background.GetComponent<SpriteRenderer>();
+        SpriteRenderer backgroundSpriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
 
         // Setup variables
         float cameraHeight = Camera.main.orthographicSize * 2;
@@ -54,7 +53,7 @@ public class CameraController : MonoBehaviour
         backgroundScale.y = cameraSize.y / spriteSize.y;
 
         // Set to background
-        background.transform.localScale = backgroundScale;
+        this.gameObject.transform.localScale = backgroundScale;
     }
 
     private void DetectOrientationChange()
