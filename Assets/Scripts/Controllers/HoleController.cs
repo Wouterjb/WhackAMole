@@ -20,4 +20,11 @@ public class HoleController : MonoBehaviour
 
         activeMole = GameObject.Instantiate(molePrefabs[randomMoleIndex], this.gameObject.transform.position, Quaternion.identity);
     }
+
+    // This function is called when the object becomes disabled or inactive
+    public void OnDisable()
+    {
+        if (activeMole != null)
+            activeMole.SetActive(false);
+    }
 }
