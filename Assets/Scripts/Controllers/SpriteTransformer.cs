@@ -39,6 +39,9 @@ public class SpriteTransformer : MonoBehaviour
 
     private void AdjustBackgroundSize()
     {
+        if (Camera.main == null)
+            return;
+
         // Get components
         SpriteRenderer backgroundSpriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
 
