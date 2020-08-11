@@ -115,6 +115,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 369300513339362565}
   timeText: {fileID: 4002205655653228893}
+  newHighScoreText: {fileID: 0}
+  noHighScoreText: {fileID: 0}
 --- !u!1001 &1725202567427535812
 PrefabInstance:
   m_ObjectHideFlags: 0

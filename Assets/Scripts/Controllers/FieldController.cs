@@ -113,5 +113,10 @@ public class FieldController : MonoBehaviour
     private void OnSessionEnd(System.Object args)
     {
         sessionStarted = false;
+
+        for (int i = 0; i < holes.Length; i++)
+        {
+            holes[i].gameObject.SetActive(false);
+        }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class HudHandler : MonoBehaviour
 {
     // Editor variables
+    [Header("Hud texts")]
     public GameObject scoreText = null;
     public GameObject timeText = null;
 

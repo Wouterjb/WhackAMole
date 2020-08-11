@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     // Editor variables
     [Header("User interface references")]
     public GameObject startScreen;
+    public GameObject endScreen;
     public GameObject playerHud;
 
     // References
@@ -40,6 +41,7 @@ public class UIManager : MonoBehaviour
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
         EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
+        EventManager.Instance.AddListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnded);
 
         ActivateCanvas(startScreen);
     }
@@ -50,6 +52,7 @@ public class UIManager : MonoBehaviour
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_ACTIVATE_CANVAS, OnActivateCanvas);
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_PLAYER_START, OnPlayerStart);
         EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_SESSION_START, OnSessionReady);
+        EventManager.Instance.RemoveListener(EventManager.CustomEventType.EVENT_SESSION_END, OnSessionEnded);
     }
 
     private void ActivateCanvas(GameObject canvas)
@@ -91,5 +94,10 @@ public class UIManager : MonoBehaviour
     private void OnSessionReady(System.Object args)
     {
         ActivateCanvas(playerHud);
+    }
+
+    private void OnSessionEnded(System.Object args)
+    {
+        ActivateCanvas(endScreen);
     }
 }
