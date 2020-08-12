@@ -10,12 +10,27 @@ public class CameraController : MonoBehaviour
     // References
     private Camera cameraComponent;
 
-    // Start is called before the first frame update
-    public void Start()
+    // Bool
+    private bool deviceOrientationChanged = false;
+
+    // Numbers
+    private float currentScreenWidth = 0.0f;
+    private float currentScreenHeight = 0.0f;
+
+    // Awake is called at initialization of this class
+    public void Awake()
     {
         // Grab camera component
         cameraComponent = this.gameObject.GetComponent<Camera>();
 
+        // Assign variables
+        currentScreenWidth = Screen.width;
+        currentScreenHeight = Screen.height;
+    }
+
+    // Start is called before the first frame update
+    public void Start()
+    {
         // Adjust orthographic size at the start
         AdjustCameraOrthographicSize();
 
@@ -36,11 +51,18 @@ public class CameraController : MonoBehaviour
         // For in editor usage.
         AdjustCameraOrthographicSize();
 #endif
+
+        if (deviceOrientationChanged && currentScreenWidth != Screen.width && currentScreenHeight != Screen.height)
+        {
+            // Need to wait a tiny bit for the screen to flip from landscape to portrait and vica versa, this can be detected by the screen height and width changing.
+            deviceOrientationChanged = false;
+            AdjustCameraOrthographicSize();
+        }
     }
 
     private void OnDeviceOrientationChanged(System.Object args)
     {
-        AdjustCameraOrthographicSize();
+        deviceOrientationChanged = true;
     }
 
     private void AdjustCameraOrthographicSize()

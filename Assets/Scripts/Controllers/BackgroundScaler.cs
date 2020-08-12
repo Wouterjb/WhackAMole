@@ -9,7 +9,6 @@ public class BackgroundScaler : MonoBehaviour
         AdjustBackgroundSize();
     }
 
-
     // Update is called once per frame
     public void Update()
     {
