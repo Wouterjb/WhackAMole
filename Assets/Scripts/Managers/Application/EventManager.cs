@@ -26,6 +26,7 @@ public class EventManager : MonoBehaviour
         EVENT_UPDATE_SESSION_TIME = 12,
         EVENT_SCORED_POINTS = 13,
         EVENT_TOTAL_SCORED_POINTS = 14,
+        EVENT_DEVICE_ORIENTATION_CHANGE = 15,
     }
 
     // Singleton

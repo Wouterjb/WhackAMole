@@ -1,47 +1,23 @@
 ﻿using UnityEngine;
 
-public class SpriteTransformer : MonoBehaviour
+public class BackgroundScaler : MonoBehaviour
 {
-    // References
-    private DeviceOrientation currentOrientation;
-
-    // Vector
-    private Vector2 originalSpriteScale = Vector2.one;
-
-    // Awake is called at initialization of this class
-    public void Awake()
-    {
-#if UNITY_ANDROID
-        currentOrientation = Input.deviceOrientation;
-#endif
-        originalSpriteScale = this.gameObject.transform.localScale;
-    }
-
     // Start is called before the first frame update
     public void Start()
     {
+        // Setup background to be the correct fit at the start
         AdjustBackgroundSize();
-
-        //Debug.Log("BackgroundController.Start(): localPos: " + this.gameObject.transform.localPosition);
     }
+
 
     // Update is called once per frame
     public void Update()
     {
-#if UNITY_ANDROID
-        DetectOrientationChange();
-#endif
-
-#if UNITY_EDITOR
         AdjustBackgroundSize();
-#endif
     }
 
     private void AdjustBackgroundSize()
     {
-        if (Camera.main == null)
-            return;
-
         // Get components
         SpriteRenderer backgroundSpriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
 
@@ -57,11 +33,5 @@ public class SpriteTransformer : MonoBehaviour
 
         // Set to background
         this.gameObject.transform.localScale = backgroundScale;
-    }
-
-    private void DetectOrientationChange()
-    {
-        if (currentOrientation != Input.deviceOrientation)
-            AdjustBackgroundSize();
     }
 }

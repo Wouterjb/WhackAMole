@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     // References
     private SceneLoadOptions currentSceneLoadOptions;
+    private DeviceOrientation currentOrientation;
 
     public static GameManager Instance
     {
@@ -65,12 +66,32 @@ public class GameManager : MonoBehaviour
         // Hook up scene event listeners
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
+
+        // Grab current device orientation
+        currentOrientation = Input.deviceOrientation;
     }
 
     // OnDestroy is called when the object is being destroyed
     public void OnDestroy()
     {
         QuitApplication();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+#if UNITY_ANDROID
+        DetectOrientationChange();
+#endif
+    }
+
+    private void DetectOrientationChange()
+    {
+        if (currentOrientation != Input.deviceOrientation)
+        {
+            currentOrientation = Input.deviceOrientation;
+            EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_DEVICE_ORIENTATION_CHANGE, null);
+        }
     }
 
     public void OnSceneLoaded(Scene loadedScene, LoadSceneMode loadSceneMode)
