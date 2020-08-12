@@ -54,6 +54,8 @@ public class Session : MonoBehaviour
         EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_SESSION_END, null);
         EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_UPDATE_SESSION_TIME, 0.0f);
 
+        // TODO: instead of doing the comparison here, do it in storage manager and trigger this event there.
+        // Use EVENT_SESSION_END to communicated the new score to end screen en storage manager
         if (totalScore > StorageManager.Instance.playerHighestScore)
             EventManager.Instance.TriggerEvent(EventManager.CustomEventType.EVENT_NEW_HIGHSCORE, totalScore);
     }
