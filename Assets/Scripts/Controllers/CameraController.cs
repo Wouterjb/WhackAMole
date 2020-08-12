@@ -51,8 +51,10 @@ public class CameraController : MonoBehaviour
 #if UNITY_ANDROID
         if (Input.deviceOrientation == DeviceOrientation.Portrait || Input.deviceOrientation == DeviceOrientation.PortraitUpsideDown)
             cameraComponent.orthographicSize = portraitOrthoSize;
-        else
+        else if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight)
             cameraComponent.orthographicSize = landscapeOrthoSize;
+
+        // Ignore face up/face down orientations, those do not change the aspect ratio.
 #endif
 
 #if UNITY_EDITOR
